@@ -1,6 +1,6 @@
 var path = require('path');
-var { readdir, mkdir, writeFile} = require('fs');
-var { removeSync } = require('fs-extra');
+var {readdir, mkdir, writeFile} = require('fs');
+var {removeSync} = require('fs-extra');
 var evaluate = require('eval');
 
 function StaticHtmlGenerator(options) {
@@ -9,11 +9,11 @@ function StaticHtmlGenerator(options) {
 
 StaticHtmlGenerator.prototype = {
 
-	apply: function(compiler) {
+	apply: function (compiler) {
 		// build html output and prevent creating output js file
 		compiler.hooks.afterCompile.tap('kate-plugin', (compilation) => {
 			// get webpack output data
-			const { output : { filename } } = compilation.getStats().compilation.options;
+			const {output: {filename}} = compilation.getStats().compilation.options;
 			// get html output
 			const htmlOutput = this.getOutput(compilation.assets[filename]);
 			// build static html file
@@ -25,13 +25,13 @@ StaticHtmlGenerator.prototype = {
 		// remove output folder if empty
 		compiler.hooks.afterEmit.tap('kate-plugin', (compilation) => {
 			// get webpack output data
-			const { output : { path } } = compilation.getStats().compilation.options;
+			const {output: {path}} = compilation.getStats().compilation.options;
 			// if output dir is empty delete it
 			this.deleteEmptyDir(path);
 		});
 	},
 
-	deleteEmptyDir: function(path) {
+	deleteEmptyDir: function (path) {
 		readdir(path, (err, files) => {
 			if (err) {
 				console.log(err);
@@ -41,16 +41,16 @@ StaticHtmlGenerator.prototype = {
 		});
 	},
 
-	getOutput: function(asset) {
-		const { data = {} } = this.options.output;
+	getOutput: function (asset) {
+		const {data = {}} = this.options.output;
 		// get source of the file and execute it
 		const source = asset.source();
 		const render = evaluate(source, '', {}, true).default;
 		return render(data);
 	},
 
-	buildOutput: function(output) {
-		const { file, path: outputPath } = this.options.output;
+	buildOutput: function (output) {
+		const {file, path: outputPath} = this.options.output;
 		// remove path
 		removeSync(outputPath);
 		// create folder and file

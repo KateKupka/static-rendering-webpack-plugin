@@ -38,4 +38,5 @@ const config = {
 }
 
 const compiler = webpack(config);
-compiler.run(() => {});
+compiler.run(() => {
+});
